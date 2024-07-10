@@ -29,6 +29,7 @@ const getLocationApi = function (city) {
                 response.json().then(function (data) {
                     const latitude = data[0].lat;
                     const longitude = data[0].lon;
+                    getWeatherApi(latitude, longitude);
                     console.log(latitude, longitude);
                 });
             }
@@ -36,8 +37,17 @@ const getLocationApi = function (city) {
 
 }
 
-const getWeatherApi = function (data) {
-    const requestForecastUrl = `api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${apiKey}`;
+const getWeatherApi = function (latitude, longitude) {
+    const requestForecastUrl = `http://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${openWeatherMapApiKey}`;
+
+    fetch(requestForecastUrl)
+        .then(function (response) {
+            if (response.ok) {
+                response.json().then(function (data) {
+                    console.log(data);
+                })
+            }
+        })
 }
 
 formEl.addEventListener('submit', formSubmitHandler);
