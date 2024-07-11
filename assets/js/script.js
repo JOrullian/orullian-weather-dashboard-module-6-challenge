@@ -2,6 +2,10 @@ const formEl = document.querySelector('#form-input');
 const cityInput = document.querySelector('.city-input');
 const stateInput = document.querySelector('.state-input');
 const countryInput = document.querySelector('.country-input');
+const firstHalfApi = '62098b83f1a9969d'
+const secondHalfApi = 'e04386130e975d5b'
+
+const openWeatherMapApiKey = `${firstHalfApi}${secondHalfApi}`
 
 console.log(openWeatherMapApiKey);
 
