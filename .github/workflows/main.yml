@@ -15,7 +15,7 @@ jobs:
 
     - name: Use the API Key
       env:
-        API_KEY: ${{ secrets.OPEN_WEATHER_MAP_API_KEY }}
+        API_KEY: ${{ secrets.OPEN_WEATHER_MAP_API_KEY}}
       run: |
-        echo "Using API Key: $API_KEY"
-        node script.js $API_KEY
+        echo "const openWeatherMapApiKey = '$API_KEY';" > src/apikey.js
+        cat src/apikey.js
