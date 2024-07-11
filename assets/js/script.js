@@ -2,8 +2,6 @@ const formEl = document.querySelector('#form-input');
 const cityInput = document.querySelector('.city-input');
 const stateInput = document.querySelector('.state-input');
 const countryInput = document.querySelector('.country-input');
-const openWeatherMapApiKey = '62098b83f1a9969de04386130e975d5b';
-const googleMapsApiKey = 'AIzaSyC4o_3wr-rxXJXUJeT88KC_Z7QVg6y1nOM';
 
 const getMeasurementUnits = function(units) {
     const unitsInput = document.querySelector('.measurement-input');
@@ -47,7 +45,7 @@ const getLocationApi = function (city) {
                     const measurementType = getMeasurementUnits();
 
                     getWeatherApi(latitude, longitude, measurementType);
-                    
+
                     console.log(cityNameData, stateNameData, latitude, longitude);
                 });
             }
@@ -62,12 +60,21 @@ const getWeatherApi = function (latitude, longitude, measurementType) {
     fetch(requestForecastUrl)
         .then(function (response) {
             if (response.ok) {
-                response.json().then(function (data) {
-                    console.log(requestForecastUrl)
+                response.json().then(function (data) { 
                     console.log(data);
+                    let weatherArray = data.list.map(forecast => {
+                        return {
+                            date: dayjs(forecast.dt_txt.split(' ')[0]).format('MMMM D YY'),
+                            time: forecast.dt_txt.split(' ')[1],
+                            temperature: forecast.main.temp,
+                            weather: forecast.weather[0].description,
+                            windSpeed: forecast.wind.speed
+                        };
+                    });
+                    console.log(weatherArray);
                 })
             }
-        })
+        });
 }
 
 formEl.addEventListener('submit', formSubmitHandler);
