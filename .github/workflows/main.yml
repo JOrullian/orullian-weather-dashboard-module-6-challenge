@@ -1,0 +1,21 @@
+name: API Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Use the API Key
+      env:
+        API_KEY: ${{ secrets.OPEN_WEATHER_MAP_API_KEY }}
+      run: |
+        echo "Using API Key: $API_KEY"
+        # Add your commands here that use the API key
