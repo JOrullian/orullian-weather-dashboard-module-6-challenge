@@ -1,7 +1,12 @@
+const openWeatherMapApiKey = process.argv[2];
+console.log(openWeatherMapApiKey);
+
 const formEl = document.querySelector('#form-input');
 const cityInput = document.querySelector('.city-input');
 const stateInput = document.querySelector('.state-input');
 const countryInput = document.querySelector('.country-input');
+;
+console.log(openWeatherMapApiKey)
 
 const getMeasurementUnits = function(units) {
     const unitsInput = document.querySelector('.measurement-input');
