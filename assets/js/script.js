@@ -5,14 +5,14 @@ const countryInput = document.querySelector('.country-input');
 const firstHalfApi = '62098b83f1a9969d'
 const secondHalfApi = 'e04386130e975d5b'
 
-const openWeatherMapApiKey = `${firstHalfApi}${secondHalfApi}`
+const openWeatherMapApiKey = `${firstHalfApi}${secondHalfApi}` // API concatenate
 
-console.log(openWeatherMapApiKey);
-
+// Obtain unit type (celsius/fahrenheit)
 const getMeasurementUnits = function(units) {
     const unitsInput = document.querySelector('.measurement-input');
     const selectedUnits = unitsInput.value;
 
+    // Convert measurementType inputs to be readable by API
     let measurementType;
     if (selectedUnits === 'celsius') {
         measurementType = 'metric';
@@ -25,62 +25,79 @@ const getMeasurementUnits = function(units) {
 const formSubmitHandler = function (event) {
     event.preventDefault();
 
-    const cityName = cityInput.value.trim();
+    const cityName = cityInput.value.trim(); // Input city name in form
+
+    // Separate inputs for stateInput and countryInput can be added if more specificity is desired. Need to also update html with field inputs.
     // const stateName = stateInput.value.trim();
     // const countryName = countryInput.value.trim();
 
     if (cityName) {
-        getLocationApi(cityName)
+        getLocationApi(cityName) // Call getLocationApi function to obtain latitude, longitude and city name
+            .then(function (weatherArray) {
+                let forecasts = JSON.parse(localStorage.getItem('forecasts')) || [];
+                forecasts.unshift(weatherArray); // Add each item from weatherArray as a new object in forecasts array
+                localStorage.setItem('forecasts', JSON.stringify(forecasts));
+            })
+            .catch(function (error) {
+                console.error('Error fetching location and weather data:', error);
+            });
     } else {
-        alert('Please enter a city name')
+        alert('Please enter a city name'); // Error if cityInput left blank
     }
 }
 
 const getLocationApi = function (city) {
-    const requestLocationUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${city}&appid=${openWeatherMapApiKey}`
+    const requestLocationUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${city}&appid=${openWeatherMapApiKey}`;
 
-    fetch(requestLocationUrl)
+    return fetch(requestLocationUrl)
         .then(function (response) {
             if (response.ok) {
-                response.json().then(function (data) {
-                    const cityNameData = data[0].name;
-                    const stateNameData = data[0].state;
+                return response.json().then(function (data) {
                     const latitude = data[0].lat;
                     const longitude = data[0].lon;
-
                     const measurementType = getMeasurementUnits();
 
-                    getWeatherApi(latitude, longitude, measurementType);
-
-                    console.log(cityNameData, stateNameData, latitude, longitude);
+                    return getWeatherApi(latitude, longitude, measurementType, city); // Receive return from getWeatherApi function
                 });
             }
-        })
-
+        });
 }
 
-const getWeatherApi = function (latitude, longitude, measurementType) {
-
+const getWeatherApi = function (latitude, longitude, measurementType, cityName) {
     const requestForecastUrl = `http://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&units=${measurementType}&appid=${openWeatherMapApiKey}`;
 
-    fetch(requestForecastUrl)
+    return fetch(requestForecastUrl)
         .then(function (response) {
             if (response.ok) {
-                response.json().then(function (data) { 
-                    console.log(data);
+                return response.json().then(function (data) {
                     let weatherArray = data.list.map(forecast => {
+                        // Parameters for the weatherArray object
                         return {
+                            city: cityName,
                             date: dayjs(forecast.dt_txt.split(' ')[0]).format('MMMM D YY'),
-                            time: forecast.dt_txt.split(' ')[1],
+                            time: convertMilitaryto12Hr(forecast.dt_txt.split(' ')[1]),
                             temperature: forecast.main.temp,
                             weather: forecast.weather[0].description,
                             windSpeed: forecast.wind.speed
                         };
                     });
-                    console.log(weatherArray);
-                })
+                    console.log(weatherArray); // Used to easily verify if weatherArray object is created
+                    return weatherArray; // Return ultimately sent to formSubmitHandler function
+                });
             }
         });
+}
+
+function convertMilitaryto12Hr(militaryTime) {
+    const timeArray = militaryTime.split(':');
+    let hours = parseInt(timeArray[0]);
+    let minutes = timeArray[1];
+
+    let period = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+
+    return `${hours}:${minutes} ${period}`;
 }
 
 formEl.addEventListener('submit', formSubmitHandler);
