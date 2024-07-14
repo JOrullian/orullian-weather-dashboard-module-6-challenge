@@ -77,8 +77,10 @@ const getWeatherApi = function (latitude, longitude, measurementType, cityName) 
                             date: dayjs(forecast.dt_txt.split(' ')[0]).format('MMMM D YY'),
                             time: convertMilitaryto12Hr(forecast.dt_txt.split(' ')[1]),
                             temperature: forecast.main.temp,
+                            humidity: forecast.main.humidity,
                             weather: forecast.weather[0].description,
-                            windSpeed: forecast.wind.speed
+                            windSpeed: forecast.wind.speed,
+                            icon: convertIdToIcon(forecast.weather[0].icon)
                         };
                     });
                     console.log(weatherArray); // Used to easily verify if weatherArray object is created
@@ -87,6 +89,23 @@ const getWeatherApi = function (latitude, longitude, measurementType, cityName) 
             }
         });
 }
+
+const convertIdToIcon = function(iconId) {
+    const idToIconUrl = `https://openweathermap.org/img/wn/${iconId}.png`;
+
+    return fetch(idToIconUrl) // Return the fetch promise
+        .then(function (response) {
+            if(response.ok) {
+                return idToIconUrl; // Return the icon URL if the response is okay
+            } else {
+                return null; // Return null if there is an issue with the response
+            }
+        })
+        .catch(function(error) {
+            console.error('Error fetching icon:', error);
+            return null; // Return null in case of an error
+        });
+}      
 
 function convertMilitaryto12Hr(militaryTime) {
     const timeArray = militaryTime.split(':');
