@@ -1,0 +1,72 @@
+@include media-breakpoint-down(md) { ... }
+
+:root {
+    --light: #d5d5d5;
+    --lighter: #e7e7e7;
+    --dark: #404040;
+    --darker: #202020;
+}
+
+.dark {
+    background-color: var(--darker);
+}
+
+.dark #header,
+.dark #forecast-history,
+.dark #forecast-current {
+    background-color: var(--dark);
+}
+
+.dark #header-title,
+.dark #forecast-history-title,
+.dark #forecast-current-title {
+    background-color: var(--light);
+    color: var(--darker);
+}
+
+.light {
+    background-color: var(--lighter);
+}
+
+.light #header,
+.light #forecast-history,
+.light #forecast-current {
+    background-color: var(--light);
+}
+
+.light #header-title,
+.light #forecast-history-title,
+.light #forecast-current-title {
+    background-color: var(--dark);
+    color: var(--lighter);
+}
+
+@media screen and (max-width: 768px) {
+    .small-screen {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    .small-screen-sub-two {
+        margin-bottom: 1rem !important;
+        order: 1 !important;
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    .small-screen-sub-one {
+        order: 2 !important;
+        width: 100% !important;
+        height: fit-content !important;
+    }
+
+    #forecast-current-title {
+        width: fit-content !important;
+        padding: 0.5rem 1rem !important;
+    }
+
+    #forecast-history-title {
+        width: fit-content !important;
+        padding: 0.5rem 1rem !important;
+    }
+}
