@@ -37,6 +37,7 @@ const formSubmitHandler = function (event) {
                 let forecasts = JSON.parse(localStorage.getItem('forecasts')) || [];
                 forecasts.unshift(weatherArray); // Add each item from weatherArray as a new object in forecasts array
                 localStorage.setItem('forecasts', JSON.stringify(forecasts));
+                window.open("https://jorullian.github.io/orullian-weather-dashboard-module-6-challenge/query.html", "_target")
             })
             .catch(function (error) {
                 console.error('Error fetching location and weather data:', error);
@@ -106,4 +107,12 @@ function convertMilitaryto12Hr(militaryTime) {
     return `${hours}:${minutes} ${period}`;
 }
 
+// Function to open query.html with History button
+const historyButton = document.querySelector('#history-button');
+const openQueryHtml = function () {
+        window.open("https://jorullian.github.io/orullian-weather-dashboard-module-6-challenge/query.html", "_blank");
+}
+
+// History button and form submit button event listeners
+historyButton.addEventListener('click', openQueryHtml)
 formEl.addEventListener('submit', formSubmitHandler);
