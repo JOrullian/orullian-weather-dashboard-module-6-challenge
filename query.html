@@ -17,7 +17,9 @@
 
         <div class="container-fluid mx-0">
             <div id="header" class="p-3 border border-secondary rounded-4 d-flex flex-row justify-content-between align-items-center">
-                <div id="header-title" class="p-3 border border-secondary rounded-4 fs-3">Vane Imaginations</div>
+                <div id="header-title" class="p-3 border border-secondary rounded-4 fs-3 me-3">
+                    <a href="https://jorullian.github.io/orullian-weather-dashboard-module-6-challenge/" class="navbar-brand">Vane Imaginations</a>
+                </div>
                 <button type="button" id="theme-toggle" class="btn btn-secondary">Theme</button>
             </div>
         </div>
@@ -26,10 +28,10 @@
             <div id="forecast-history" class="col-3 me-4 p-3 border border-secondary rounded-4 small-screen-sub-one">
                 <div class="row">
                     <div id="forecast-history-title" class="border border-secondary rounded-4 text-center fs-3">History</div>
-                    <ul id="forecast-history-list"></ul>
+                    <ul id="forecast-history-list" class="d-flex flex-column align-items-center"></ul>
                 </div>
             </div>
-            <div id="forecast-current" class="p-3 border border-secondary rounded-4 small-screen-sub-two">
+            <div id="forecast-current" class="p-3 border border-secondary rounded-4 small-screen-sub-two flex-grow-1">
                     <div id="forecast-current-title" class="border border-secondary rounded-4 text-center fs-3 mb-3">Current</div>
                     <div class="d-flex flex-row justify-content-center">
                         <div id="current-city" class="d-flex justify-content-center rounded-4"></div>

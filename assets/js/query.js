@@ -58,41 +58,25 @@ themeSwitcher.addEventListener('click', function () {
 });
 
 const displayCurrentForecast = function () {
+    // Grab the first object in the forecasts array for the currentForecast
     const currentForecast = nestedGroupedArray[0];
     console.log ("Current Day Forecast: ", currentForecast);
 
     const currentForecastContainer = document.querySelector('#current-forecast-container');
 
-    // let highestTempText = '';
-    // let lowestTempText = '';
-    
-    // currentForecast.forEach(dayArray => {
-    //     dayHighestTempObj = dayArray[0];
-    //     dayLowestTempObj = dayArray[0];
-
-    //     dayArray.forEach(obj => {
-    //         if (obj.temperature > dayHighestTempObj.temperature) {
-    //             dayHighestTempObj = obj;
-    //         }
-    //         if (obj.temperature < dayLowestTempObj.temperature) {
-    //             dayLowestTempObj = obj;
-    //         }
-    //     });
-
-    //     highestTempText = `${dayHighestTempObj.temperature}`;
-    //     lowestTempText = `${dayLowestTempObj.temperature}`;
-    // });
-
+    // Make and append current forecast city name into current section
     const currentCityDiv = document.querySelector('#current-city')
     const currentCity = document.createElement('h2');
     currentCity.textContent = currentForecast[0][0].city;
-
     currentCityDiv.appendChild(currentCity);
     
+    // Make 5 cards, one for each day in the forecast. The card will include the date, high and low temperature and an icon to indicate type of weather.
     currentForecast.forEach(dayArray => {
+        // Obtain highest and lowest temperatures for each day.
         const dayHighestTempObj = dayArray.reduce((prev, current) => (prev.temperature > current.temperature) ? prev : current);
         const dayLowestTempObj = dayArray.reduce((prev, current) => (prev.temperature < current.temperature) ? prev : current);
 
+        // Create the card and append all components
         const currentForecastCard = document.createElement('div');
         currentForecastCard.classList.add('card', 'm-3');
 
@@ -112,7 +96,7 @@ const displayCurrentForecast = function () {
 
         const iconUrl = dayArray;
         const icon = document.createElement('img');
-        icon.classList.add('d-flex', 'justify-content-center')
+        icon.classList.add('d-flex', 'justify-content-center', 'bg-secondary')
         icon.src = dayArray[0].icon;
 
         cardBody.appendChild(cardTitle);
@@ -120,16 +104,34 @@ const displayCurrentForecast = function () {
         cardBody.appendChild(icon);
 
         currentForecastCard.appendChild(cardBody);
+        
+        // Append cards to page
         currentForecastContainer.appendChild(currentForecastCard);
     });
 }
 
 displayCurrentForecast();
 
-const renderPreviousForecasts = function () {
+const renderPreviousForecastButtons = function () {
     const forecastHistoryContainer = document.querySelector('#forecast-history-list');
 
-    const forecastHistoryListItem = document.createElement('li');
-    const forecastHistoryButton = document.createElement('button');
-    forecastHistoryButton.classList.add('btn', 'btn-secondary', 'btn-lg');
+    nestedGroupedArray.forEach(dayArray => {
+        const cityName = dayArray[0][0].city;
+
+        const forecastHistoryListItem = document.createElement('li');
+        forecastHistoryListItem.classList.add('list-group-item')
+        const forecastHistoryButton = document.createElement('button');
+        forecastHistoryButton.classList.add('btn', 'btn-secondary', 'btn-lg', 'mt-2');
+
+        forecastHistoryButton.textContent = cityName;
+
+        forecastHistoryListItem.appendChild(forecastHistoryButton);
+        forecastHistoryContainer.appendChild(forecastHistoryListItem);
+    })
+}
+
+renderPreviousForecastButtons();
+
+const populatePreviousForecast = function () {
+    
 }
