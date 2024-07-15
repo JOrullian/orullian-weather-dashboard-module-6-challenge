@@ -29,11 +29,14 @@
                     <ul id="forecast-history-list"></ul>
                 </div>
             </div>
-            <div id="forecast-current" class="col p-3 border border-secondary rounded-4 small-screen-sub-two">
-                <div class="row">
-                    <div id="forecast-current-title" class="border border-secondary rounded-4 text-center fs-3">Current</div>
-                    <div id="current-forecast" class="d-flex flex-row"></div>
-                </div>
+            <div id="forecast-current" class="p-3 border border-secondary rounded-4 small-screen-sub-two">
+                    <div id="forecast-current-title" class="border border-secondary rounded-4 text-center fs-3 mb-3">Current</div>
+                    <div class="d-flex flex-row justify-content-center">
+                        <div id="current-city" class="d-flex justify-content-center rounded-4"></div>
+                    </div>
+                    <div id="current" class="hstack gap-3">
+                        <div id="current-forecast-container" class="container-fluid d-flex flex-wrap flex-row justify-content-center"></div>
+                    </div>
             </div>
         </div>
     
