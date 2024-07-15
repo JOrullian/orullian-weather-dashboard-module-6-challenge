@@ -1,52 +1,130 @@
-let forecastArray = JSON.parse(localStorage.getItem('forecasts')) || [];
+// Get forecasts array from localStorage
+const weatherData = JSON.parse(localStorage.getItem('forecasts')) || [];
+console.log("All forecasts: ", weatherData);
+
+// Function to group the weather data by date
+function groupByDate(data) {
+    return data.reduce((acc, item) => {
+        const date = item.date;
+        if (!acc[date]) {
+        acc[date] = [];
+        }
+        acc[date].push(item);
+        return acc;
+    }, {});
+}
+
+// Iterate through each second-level array, group by date, and maintain the nested structure
+const nestedGroupedArray = weatherData.map(secondLevelArray => {
+    const groupedByDate = groupByDate(secondLevelArray);
+    return Object.keys(groupedByDate).map(date => groupedByDate[date]);
+});
+
+  // Check the final nested grouped array
+console.log("Nested Grouped Array:", nestedGroupedArray);
+
+
 
 // Light & Dark mode toggle
 // Access toggle switch HTML element
 const themeSwitcher = document.querySelector('#theme-toggle');
 const setMode = document.querySelector('.set-theme');
 
-// Set default mode to dark
-let mode = 'dark';
+// Set theme to persist after reload
+let theme = JSON.parse(localStorage.getItem('theme'));
+
+const setTheme = (theme) => {
+    if (theme === 'dark') {
+        setMode.setAttribute('class', 'dark');
+    } else {
+        setMode.setAttribute('class', 'light');
+    }
+};
+
+setTheme(theme);
 
 // Listen for a click event on toggle switch
 themeSwitcher.addEventListener('click', function () {
     // If mode is dark, apply light background
-    if (mode === 'dark') {
-    mode = 'light';
-    setMode.setAttribute('class', 'light');
+    if (theme === 'dark') {
+    theme = 'light';
     }
     // If mode is light, apply dark background
     else {
-        mode = 'dark';
-        setMode.setAttribute('class', 'dark');
+        theme = 'dark';
     }
+    setTheme(theme);
+    localStorage.setItem('theme', JSON.stringify(theme));
 });
 
-const getForecastsFromStorage = function () {
-    const forecasts = JSON.parse(localStorage.getItem('forecasts')) || [];
-
-}
-
 const displayCurrentForecast = function () {
+    const currentForecast = nestedGroupedArray[0];
+    console.log ("Current Day Forecast: ", currentForecast);
+
     const currentForecastContainer = document.querySelector('#current-forecast');
 
-    const currentForecastDiv = document.createElement('div');
-    const currentForecastCity = document.createElement('h2');
+    // let highestTempText = '';
+    // let lowestTempText = '';
     
-    const currentForecastDaysDiv = document.createElement('div');
-    const currentForecastDate = document.createElement('h3');
-    const currentForecastTime = document.createElement('p');
-    const currentForecastTemperature = document.createElement('p');
-    const currentForecastHumidity = document.createElement('p');
-    const currentForecastWeather = document.createElement('p');
-    const currentForecastWindSpeed = document.createElement('p');
-    const currentForecastIcon = document.createElement('img');
+    // currentForecast.forEach(dayArray => {
+    //     dayHighestTempObj = dayArray[0];
+    //     dayLowestTempObj = dayArray[0];
 
+    //     dayArray.forEach(obj => {
+    //         if (obj.temperature > dayHighestTempObj.temperature) {
+    //             dayHighestTempObj = obj;
+    //         }
+    //         if (obj.temperature < dayLowestTempObj.temperature) {
+    //             dayLowestTempObj = obj;
+    //         }
+    //     });
+
+    //     highestTempText = `${dayHighestTempObj.temperature}`;
+    //     lowestTempText = `${dayLowestTempObj.temperature}`;
+    // });
+    
+
+
+    currentForecast.forEach(dayArray => {
+        const dayHighestTempObj = dayArray.reduce((prev, current) => (prev.temperature > current.temperature) ? prev : current);
+        const dayLowestTempObj = dayArray.reduce((prev, current) => (prev.temperature < current.temperature) ? prev : current);
+
+        const currentForecastCard = document.createElement('div');
+        currentForecastCard.classList.add('card', 'mb-3');
+
+        const cardBody = document.createElement('div');
+        cardBody.classList.add('card-body');
+
+        const cardTitle = document.createElement('h5');
+        cardTitle.classList.add('card-title');
+        cardTitle.textContent = new Date(dayArray[0].date).toDateString();
+
+        const highestTempText = `High: ${dayHighestTempObj.temperature}`;
+        const lowestTempText = `Low: ${dayLowestTempObj.temperature}`;
+
+        const cardText = document.createElement('p');
+        cardText.classList.add('card-text');
+        cardText.textContent = `${highestTempText}, ${lowestTempText}`;
+
+        const iconUrl = dayArray;
+        const icon = document.createElement('img');
+        icon.src = iconUrl;
+
+        cardBody.appendChild(cardTitle);
+        cardBody.appendChild(cardText);
+        cardBody.appendChild(icon);
+
+        currentForecastCard.appendChild(cardBody);
+        currentForecastContainer.appendChild(currentForecastCard);
+    });
 }
+
+displayCurrentForecast();
 
 const renderPreviousForecasts = function () {
     const forecastHistoryContainer = document.querySelector('#forecast-history-list');
 
     const forecastHistoryListItem = document.createElement('li');
-    const forecastHistoryCity = document.createElement('h2');
+    const forecastHistoryButton = document.createElement('button');
+    forecastHistoryButton.classList.add('btn', 'btn-secondary', 'btn-lg');
 }

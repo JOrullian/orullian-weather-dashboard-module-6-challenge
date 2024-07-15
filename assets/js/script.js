@@ -91,21 +91,8 @@ const getWeatherApi = function (latitude, longitude, measurementType, cityName) 
 }
 
 const convertIdToIcon = function(iconId) {
-    const idToIconUrl = `https://openweathermap.org/img/wn/${iconId}.png`;
-
-    return fetch(idToIconUrl) // Return the fetch promise
-        .then(function (response) {
-            if(response.ok) {
-                return idToIconUrl; // Return the icon URL if the response is okay
-            } else {
-                return null; // Return null if there is an issue with the response
-            }
-        })
-        .catch(function(error) {
-            console.error('Error fetching icon:', error);
-            return null; // Return null in case of an error
-        });
-}      
+    return `https://openweathermap.org/img/wn/${iconId}@2x.png`;
+};    
 
 function convertMilitaryto12Hr(militaryTime) {
     const timeArray = militaryTime.split(':');
