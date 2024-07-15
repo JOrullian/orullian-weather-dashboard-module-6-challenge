@@ -61,7 +61,7 @@ const displayCurrentForecast = function () {
     const currentForecast = nestedGroupedArray[0];
     console.log ("Current Day Forecast: ", currentForecast);
 
-    const currentForecastContainer = document.querySelector('#current-forecast');
+    const currentForecastContainer = document.querySelector('#current-forecast-container');
 
     // let highestTempText = '';
     // let lowestTempText = '';
@@ -82,33 +82,38 @@ const displayCurrentForecast = function () {
     //     highestTempText = `${dayHighestTempObj.temperature}`;
     //     lowestTempText = `${dayLowestTempObj.temperature}`;
     // });
+
+    const currentCityDiv = document.querySelector('#current-city')
+    const currentCity = document.createElement('h2');
+    currentCity.textContent = currentForecast[0][0].city;
+
+    currentCityDiv.appendChild(currentCity);
     
-
-
     currentForecast.forEach(dayArray => {
         const dayHighestTempObj = dayArray.reduce((prev, current) => (prev.temperature > current.temperature) ? prev : current);
         const dayLowestTempObj = dayArray.reduce((prev, current) => (prev.temperature < current.temperature) ? prev : current);
 
         const currentForecastCard = document.createElement('div');
-        currentForecastCard.classList.add('card', 'mb-3');
+        currentForecastCard.classList.add('card', 'm-3');
 
         const cardBody = document.createElement('div');
-        cardBody.classList.add('card-body');
+        cardBody.classList.add('card-body', 'd-flex','flex-column', 'justify-content-center');
 
         const cardTitle = document.createElement('h5');
-        cardTitle.classList.add('card-title');
+        cardTitle.classList.add('card-title', 'd-flex', 'justify-content-center');
         cardTitle.textContent = new Date(dayArray[0].date).toDateString();
 
         const highestTempText = `High: ${dayHighestTempObj.temperature}`;
         const lowestTempText = `Low: ${dayLowestTempObj.temperature}`;
 
         const cardText = document.createElement('p');
-        cardText.classList.add('card-text');
+        cardText.classList.add('card-text', 'd-flex', 'justify-content-center');
         cardText.textContent = `${highestTempText}, ${lowestTempText}`;
 
         const iconUrl = dayArray;
         const icon = document.createElement('img');
-        icon.src = iconUrl;
+        icon.classList.add('d-flex', 'justify-content-center')
+        icon.src = dayArray[0].icon;
 
         cardBody.appendChild(cardTitle);
         cardBody.appendChild(cardText);

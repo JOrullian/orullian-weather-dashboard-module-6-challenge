@@ -19,7 +19,8 @@
 
 .dark #header-title,
 .dark #forecast-history-title,
-.dark #forecast-current-title {
+.dark #forecast-current-title,
+.dark #current-city {
     background-color: var(--light);
     color: var(--darker);
 }
@@ -36,9 +37,15 @@
 
 .light #header-title,
 .light #forecast-history-title,
-.light #forecast-current-title {
+.light #forecast-current-title,
+.light #current-city {
     background-color: var(--dark);
     color: var(--lighter);
+}
+
+#current-city {
+    width: fit-content !important;
+    padding: 1rem !important;
 }
 
 @media screen and (max-width: 768px) {
