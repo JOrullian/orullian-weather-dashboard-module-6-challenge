@@ -121,9 +121,13 @@ const renderPreviousForecastButtons = function () {
         const forecastHistoryListItem = document.createElement('li');
         forecastHistoryListItem.classList.add('list-group-item')
         const forecastHistoryButton = document.createElement('button');
-        forecastHistoryButton.classList.add('btn', 'btn-secondary', 'btn-lg', 'mt-2');
+        forecastHistoryButton.classList.add('btn', 'btn-secondary', 'btn-lg', 'mt-2', 'city-names');
 
         forecastHistoryButton.textContent = cityName;
+
+        forecastHistoryButton.addEventListener('click', function() {
+            populatePreviousForecast(index);
+        })
 
         forecastHistoryListItem.appendChild(forecastHistoryButton);
         forecastHistoryContainer.appendChild(forecastHistoryListItem);
@@ -132,6 +136,17 @@ const renderPreviousForecastButtons = function () {
 
 renderPreviousForecastButtons();
 
-const populatePreviousForecast = function () {
-    
+const populatePreviousForecast = function (index) {
+    if (index >= 0 && index < nestedGroupedArray.length) {
+        let arrayToMove = nestedGroupedArray[index]; // Array to move to front
+        nestedGroupedArray.splice(index, 1); // Remove second level array from nestedGroupedArray
+        nestedGroupedArray.unshift(arrayToMove); // Insert the array at the beginning
+
+        console.log("Array moved successfully!");
+
+        displayCurrentForecast();
+        renderPreviousForecastButtons();
+    } else {
+        console.log("Invalid index provided.");
+    }
 }
