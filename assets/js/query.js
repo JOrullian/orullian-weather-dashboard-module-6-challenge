@@ -126,7 +126,8 @@ const renderPreviousForecastButtons = function () {
         forecastHistoryButton.textContent = cityName;
 
         forecastHistoryButton.addEventListener('click', function() {
-            populatePreviousForecast(index);
+            const index = nestedGroupedArray.findIndex(dayArray => dayArray[0][0].city === cityName);
+            populatePreviousForecast(index, cityName);
         })
 
         forecastHistoryListItem.appendChild(forecastHistoryButton);
@@ -136,17 +137,52 @@ const renderPreviousForecastButtons = function () {
 
 renderPreviousForecastButtons();
 
-const populatePreviousForecast = function (index) {
-    if (index >= 0 && index < nestedGroupedArray.length) {
-        let arrayToMove = nestedGroupedArray[index]; // Array to move to front
-        nestedGroupedArray.splice(index, 1); // Remove second level array from nestedGroupedArray
-        nestedGroupedArray.unshift(arrayToMove); // Insert the array at the beginning
+const populatePreviousForecast = function (index, cityName) {
+    const selectedForecast = nestedGroupedArray[index];
+    console.log("Selected Previous Forecast for: ", cityName, ":", selectedForecast);
 
-        console.log("Array moved successfully!");
+    // Make and append current forecast city name into current section
+    const currentCityDiv = document.querySelector('#current-city');
+    currentCityDiv.innerHTML = '';
+    const currentCity = document.createElement('h2');
+    currentCity.textContent = cityName;
+    currentCityDiv.appendChild(currentCity);
 
-        displayCurrentForecast();
-        renderPreviousForecastButtons();
-    } else {
-        console.log("Invalid index provided.");
-    }
+    const currentForecastContainer = document.querySelector('#current-forecast-container');
+    currentForecastContainer.innerHTML = ''; // Clear previous forecast data
+
+    selectedForecast.forEach(dayArray => {
+        const dayHighestTempObj = dayArray.reduce((prev, current) => (prev.temperature > current.temperature) ? prev : current);
+        const dayLowestTempObj = dayArray.reduce((prev, current) => (prev.temperature < current.temperature) ? prev : current);
+
+        const previousForecastCard = document.createElement('div');
+        previousForecastCard.classList.add('card', 'm-3');
+
+        const cardBody = document.createElement('div');
+        cardBody.classList.add('card-body', 'd-flex', 'flex-column', 'justify-content-center');
+
+        const cardTitle = document.createElement('h5');
+        cardTitle.classList.add('card-title', 'd-flex', 'justify-content-center');
+        cardTitle.textContent = new Date(dayArray[0].date).toDateString();
+
+        const highestTempText = `High: ${dayHighestTempObj.temperature}`;
+        const lowestTempText = `Low: ${dayLowestTempObj.temperature}`;
+
+        const cardText = document.createElement('p');
+        cardText.classList.add('card-text', 'd-flex', 'justify-content-center');
+        cardText.textContent = `${highestTempText}, ${lowestTempText}`;
+
+        const iconUrl = dayArray[0].icon;
+        const icon = document.createElement('img');
+        icon.classList.add('d-flex', 'justify-content-center', 'bg-secondary');
+        icon.src = dayArray[0].icon;
+
+        cardBody.appendChild(cardTitle);
+        cardBody.appendChild(cardText);
+        cardBody.appendChild(icon);
+
+        previousForecastCard.appendChild(cardBody);
+
+       currentForecastContainer.appendChild(previousForecastCard);
+    });
 }
