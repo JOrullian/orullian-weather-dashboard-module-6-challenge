@@ -35,7 +35,16 @@ const formSubmitHandler = function (event) {
         getLocationApi(cityName) // Call getLocationApi function to obtain latitude, longitude and city name
             .then(function (weatherArray) {
                 let forecasts = JSON.parse(localStorage.getItem('forecasts')) || [];
+
+                forecasts = forecasts.filter(forecast => forecast[0]?.city !== cityName); // Remove any existing object with the same cityName
+
                 forecasts.unshift(weatherArray); // Add each item from weatherArray as a new object in forecasts array
+
+                // Only allow 15 most recent forecasts to occupy array
+                if (forecasts.length > 15) {
+                    forecasts = forecasts.slice(0, 15);
+                };
+
                 localStorage.setItem('forecasts', JSON.stringify(forecasts));
                 window.open("https://jorullian.github.io/orullian-weather-dashboard-module-6-challenge/query.html", "_target")
             })
