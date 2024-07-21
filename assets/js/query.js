@@ -1,6 +1,6 @@
 // Get forecasts array from localStorage
-const weatherData = JSON.parse(localStorage.getItem('forecasts')) || [];
-console.log("All forecasts: ", weatherData);
+const fiveDayWeatherData = JSON.parse(localStorage.getItem('fiveDayForecasts')) || [];
+console.log("All forecasts: ", fiveDayWeatherData);
 
 // Function to group the weather data by date
 function groupByDate(data) {
@@ -15,15 +15,13 @@ function groupByDate(data) {
 }
 
 // Iterate through each second-level array, group by date, and maintain the nested structure
-const nestedGroupedArray = weatherData.map(secondLevelArray => {
+const nestedGroupedArray = fiveDayWeatherData.map(secondLevelArray => {
     const groupedByDate = groupByDate(secondLevelArray);
     return Object.keys(groupedByDate).map(date => groupedByDate[date]);
 });
 
   // Check the final nested grouped array
 console.log("Nested Grouped Array:", nestedGroupedArray);
-
-
 
 // Light & Dark mode toggle
 // Access toggle switch HTML element
@@ -58,27 +56,71 @@ themeSwitcher.addEventListener('click', function () {
 });
 
 const displayCurrentForecast = function () {
-    // Grab the first object in the forecasts array for the currentForecast
-    const currentForecast = nestedGroupedArray[0];
-    console.log ("Current Day Forecast: ", currentForecast);
+    // Make card for current forecast.  The card will include the current temperature, humidity and icon to indicate type of weather.
+    const currentWeatherData = JSON.parse(localStorage.getItem('currentForecasts')) || [];
+    const currentForecast = currentWeatherData[0];
+    console.log(currentWeatherData);
 
     const currentForecastContainer = document.querySelector('#current-forecast-container');
+
+    // Set data as variables
+    const currentTemp = currentForecast.temperature;
+    const currentHumidity = currentForecast.humidity;
+    const currentIcon = currentForecast.icon;
+
+    // Create the card and append all components
+    const currentForecastCard = document.createElement('div');
+    currentForecastCard.classList.add('card', 'm-3');
+
+    const cardBody = document.createElement('div');
+    cardBody.classList.add('card-body', 'd-flex','flex-column', 'justify-content-center');
+
+    const cardTitle = document.createElement('h5');
+    cardTitle.classList.add('card-title', 'd-flex', 'justify-content-center');
+    cardTitle.textContent = dayjs().format('MMMM DD YYYY');
+
+    const cardText = document.createElement('p');
+    cardText.classList.add('card-text', 'd-flex', 'align-items-center', 'flex-column');
+    cardText.innerHTML =` 
+        <p>Current Temp: ${currentTemp}</p>
+        <p>Humidity: ${currentHumidity}%</p>`;
+
+    const icon = document.createElement('img');
+    icon.classList.add('d-flex', 'justify-content-center', 'bg-secondary', 'img-responsive')
+    icon.src = currentIcon;
+
+    cardBody.appendChild(cardTitle);
+    cardBody.appendChild(cardText);
+    cardBody.appendChild(icon);
+
+    currentForecastCard.appendChild(cardBody);
+    
+    // Append cards to page
+  currentForecastContainer.appendChild(currentForecastCard);
+}
+
+const displayFiveDayForecast = function () {
+    // Grab the first object in the forecasts array for the fiveDayForecast
+    const fiveDayForecast = nestedGroupedArray[0];
+    console.log ("Current Day Forecast: ", fiveDayForecast);
+
+    const fiveDayForecastContainer = document.querySelector('#five-day-forecast-container');
 
     // Make and append current forecast city name into current section
     const currentCityDiv = document.querySelector('#current-city')
     const currentCity = document.createElement('h2');
-    currentCity.textContent = currentForecast[0][0].city;
+    currentCity.textContent = fiveDayForecast[0][0].city;
     currentCityDiv.appendChild(currentCity);
     
     // Make 5 cards, one for each day in the forecast. The card will include the date, high and low temperature and an icon to indicate type of weather.
-    currentForecast.forEach(dayArray => {
+    fiveDayForecast.forEach(dayArray => {
         // Obtain highest and lowest temperatures for each day.
         const dayHighestTempObj = dayArray.reduce((prev, current) => (prev.temperature > current.temperature) ? prev : current);
         const dayLowestTempObj = dayArray.reduce((prev, current) => (prev.temperature < current.temperature) ? prev : current);
 
         // Create the card and append all components
-        const currentForecastCard = document.createElement('div');
-        currentForecastCard.classList.add('card', 'm-3');
+        const fiveDayForecastCard = document.createElement('div');
+        fiveDayForecastCard.classList.add('card', 'm-3');
 
         const cardBody = document.createElement('div');
         cardBody.classList.add('card-body', 'd-flex','flex-column', 'justify-content-center');
@@ -96,21 +138,22 @@ const displayCurrentForecast = function () {
 
         const iconUrl = dayArray;
         const icon = document.createElement('img');
-        icon.classList.add('d-flex', 'justify-content-center', 'bg-secondary')
+        icon.classList.add('d-flex', 'justify-content-center', 'bg-secondary', 'img-responsive')
         icon.src = dayArray[0].icon;
 
         cardBody.appendChild(cardTitle);
         cardBody.appendChild(cardText);
         cardBody.appendChild(icon);
 
-        currentForecastCard.appendChild(cardBody);
+        fiveDayForecastCard.appendChild(cardBody);
         
         // Append cards to page
-        currentForecastContainer.appendChild(currentForecastCard);
+        fiveDayForecastContainer.appendChild(fiveDayForecastCard);
     });
 }
 
 displayCurrentForecast();
+displayFiveDayForecast();
 
 const renderPreviousForecastButtons = function () {
     const forecastHistoryContainer = document.querySelector('#forecast-history-list');
@@ -127,7 +170,8 @@ const renderPreviousForecastButtons = function () {
 
         forecastHistoryButton.addEventListener('click', function() {
             const index = nestedGroupedArray.findIndex(dayArray => dayArray[0][0].city === cityName);
-            populatePreviousForecast(index, cityName);
+            populatePreviousFiveDayForecast(index, cityName);
+            populatePreviousCurrentForecast(index, cityName);
         })
 
         forecastHistoryListItem.appendChild(forecastHistoryButton);
@@ -137,7 +181,51 @@ const renderPreviousForecastButtons = function () {
 
 renderPreviousForecastButtons();
 
-const populatePreviousForecast = function (index, cityName) {
+const populatePreviousCurrentForecast = function(index, cityName) {
+    const currentWeatherData = JSON.parse(localStorage.getItem('currentForecasts')) || [];
+    const selectedForecast = currentWeatherData[index];
+    console.log("Selected Previous Forecast for: ", cityName, ":", selectedForecast);
+
+    const currentForecastContainer = document.querySelector('#current-forecast-container');
+    currentForecastContainer.innerHTML = ''; // Clear previous forecast data
+
+    // Set data as variables
+    const currentTemp = selectedForecast.temperature;
+    const currentHumidity = selectedForecast.humidity;
+    const currentIcon = selectedForecast.icon;
+
+    // Create the card and append all components
+    const currentForecastCard = document.createElement('div');
+    currentForecastCard.classList.add('card', 'm-3');
+
+    const cardBody = document.createElement('div');
+    cardBody.classList.add('card-body', 'd-flex','flex-column', 'justify-content-center');
+
+    const cardTitle = document.createElement('h5');
+    cardTitle.classList.add('card-title', 'd-flex', 'justify-content-center');
+    cardTitle.textContent = dayjs().format('MMMM DD YYYY');
+
+    const cardText = document.createElement('p');
+    cardText.classList.add('card-text', 'd-flex', 'align-items-center', 'flex-column');
+    cardText.innerHTML =` 
+        <p>Current Temp: ${currentTemp}</p>
+        <p>Humidity: ${currentHumidity}%</p>`;
+
+    const icon = document.createElement('img');
+    icon.classList.add('d-flex', 'justify-content-center', 'bg-secondary', 'img-responsive')
+    icon.src = currentIcon;
+
+    cardBody.appendChild(cardTitle);
+    cardBody.appendChild(cardText);
+    cardBody.appendChild(icon);
+
+    currentForecastCard.appendChild(cardBody);
+    
+    // Append cards to page
+    currentForecastContainer.appendChild(currentForecastCard);
+}
+
+const populatePreviousFiveDayForecast = function (index, cityName) {
     const selectedForecast = nestedGroupedArray[index];
     console.log("Selected Previous Forecast for: ", cityName, ":", selectedForecast);
 
@@ -148,8 +236,8 @@ const populatePreviousForecast = function (index, cityName) {
     currentCity.textContent = cityName;
     currentCityDiv.appendChild(currentCity);
 
-    const currentForecastContainer = document.querySelector('#current-forecast-container');
-    currentForecastContainer.innerHTML = ''; // Clear previous forecast data
+    const fiveDayForecastContainer = document.querySelector('#five-day-forecast-container');
+    fiveDayForecastContainer.innerHTML = ''; // Clear previous forecast data
 
     selectedForecast.forEach(dayArray => {
         const dayHighestTempObj = dayArray.reduce((prev, current) => (prev.temperature > current.temperature) ? prev : current);
@@ -174,7 +262,7 @@ const populatePreviousForecast = function (index, cityName) {
 
         const iconUrl = dayArray[0].icon;
         const icon = document.createElement('img');
-        icon.classList.add('d-flex', 'justify-content-center', 'bg-secondary');
+        icon.classList.add('d-flex', 'justify-content-center', 'bg-secondary', 'img-responsive');
         icon.src = dayArray[0].icon;
 
         cardBody.appendChild(cardTitle);
@@ -183,6 +271,6 @@ const populatePreviousForecast = function (index, cityName) {
 
         previousForecastCard.appendChild(cardBody);
 
-       currentForecastContainer.appendChild(previousForecastCard);
+       fiveDayForecastContainer.appendChild(previousForecastCard);
     });
 }

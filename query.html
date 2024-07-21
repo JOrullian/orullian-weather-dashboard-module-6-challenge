@@ -36,8 +36,15 @@
                     <div class="d-flex flex-row justify-content-center">
                         <div id="current-city" class="d-flex justify-content-center rounded-4"></div>
                     </div>
+                    <div id="forecast-current-today">
+                        <div id="today-title" class="border border-secondary rounded-4 text-center fs-3 m-3">Today</div>
+                        <div id="today">
+                            <div id="current-forecast-container" class="container-fluid d-flex flex-wrap flex-row justify-content-center mb-3"></div>
+                        </div>
+                    </div>
+                    <div id="five-day-title" class="border border-secondary rounded-4 text-center fs-3 mb-3">5-Day Forecast</div>
                     <div id="current" class="hstack gap-3">
-                        <div id="current-forecast-container" class="container-fluid d-flex flex-wrap flex-row justify-content-center"></div>
+                        <div id="five-day-forecast-container" class="container-fluid d-flex flex-wrap flex-row justify-content-center"></div>
                     </div>
             </div>
         </div>
@@ -56,6 +63,11 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
         integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" 
         crossorigin="anonymous"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/dayjs@1.11.3/dayjs.min.js"
+        integrity="sha256-iu/zLUB+QgISXBLCW/mcDi/rnf4m4uEDO0wauy76x7U="
+        crossorigin="anonymous">
+    </script> 
     <script src="./assets/js/query.js"></script>
 </body>
 </html>

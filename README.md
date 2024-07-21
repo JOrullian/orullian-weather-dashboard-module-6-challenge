@@ -2,11 +2,11 @@
 
 [Link to Form](https://jorullian.github.io/orullian-weather-dashboard-module-6-challenge/)
 
-[Link to Forecasts]()
+[Link to Forecasts](https://jorullian.github.io/orullian-weather-dashboard-module-6-challenge/query.html)
 
-[Screenshot of Form Page](./assets/images/weather-forecast-form-screenshot.png)
+![Screenshot of Form Page](./assets/images/weather-forecast-form-screenshot.png)
 
-[Screenshot of Forecast Page](https://jorullian.github.io/orullian-weather-dashboard-module-6-challenge/query.html)
+![Screenshot of Forecast Page](https://jorullian.github.io/orullian-weather-dashboard-module-6-challenge/query.html)
 
 ## Description
 

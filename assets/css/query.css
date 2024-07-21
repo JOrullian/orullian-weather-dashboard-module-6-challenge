@@ -20,7 +20,9 @@
 .dark #header-title,
 .dark #forecast-history-title,
 .dark #forecast-current-title,
-.dark #current-city {
+.dark #current-city,
+.dark #today-title,
+.dark #five-day-title {
     background-color: var(--light);
     color: var(--darker);
 }
@@ -38,7 +40,9 @@
 .light #header-title,
 .light #forecast-history-title,
 .light #forecast-current-title,
-.light #current-city {
+.light #current-city,
+.light #today-title,
+.light #five-day-title {
     background-color: var(--dark);
     color: var(--lighter);
 }
@@ -75,5 +79,13 @@
     #forecast-history-title {
         width: fit-content !important;
         padding: 0.5rem 1rem !important;
+    }
+
+    #header {
+        flex-direction: column !important;
+    }
+
+    #header-title {
+        margin: 0 0 1rem 0 !important;
     }
 }
