@@ -33,19 +33,32 @@ const formSubmitHandler = function (event) {
 
     if (cityName) {
         getLocationApi(cityName) // Call getLocationApi function to obtain latitude, longitude and city name
-            .then(function (weatherArray) {
-                let forecasts = JSON.parse(localStorage.getItem('forecasts')) || [];
+            .then(function ([weatherFiveDayArray, weatherCurrentArray]) {
+                let currentForecasts = JSON.parse(localStorage.getItem('currentForecasts')) || [];
 
-                forecasts = forecasts.filter(forecast => forecast[0]?.city !== cityName); // Remove any existing object with the same cityName
+                currentForecasts = currentForecasts.filter(currentForecast => currentForecast[0]?.city !== cityName); // Remove any existing object with the same cityName
 
-                forecasts.unshift(weatherArray); // Add each item from weatherArray as a new object in forecasts array
+                currentForecasts.unshift(weatherCurrentArray); // Add each item from weatherCurrentArray as a new object in forecasts array
 
                 // Only allow 15 most recent forecasts to occupy array
-                if (forecasts.length > 15) {
-                    forecasts = forecasts.slice(0, 15);
+                if (currentForecasts.length > 15) {
+                    currentForecasts = currentForecasts.slice(0, 15);
                 };
 
-                localStorage.setItem('forecasts', JSON.stringify(forecasts));
+                localStorage.setItem('currentForecasts', JSON.stringify(currentForecasts));
+
+                let fiveDayForecasts = JSON.parse(localStorage.getItem('fiveDayForecasts')) || [];
+
+                fiveDayForecasts = fiveDayForecasts.filter(fiveDayForecast => fiveDayForecast[0]?.city !== cityName); // Remove any existing object with the same cityName
+
+                fiveDayForecasts.unshift(weatherFiveDayArray); // Add each item from weatherFiveDayArray as a new object in forecasts array
+
+                // Only allow 15 most recent forecasts to occupy array
+                if (fiveDayForecasts.length > 15) {
+                    fiveDayForecasts = fiveDayForecasts.slice(0, 15);
+                };
+
+                localStorage.setItem('fiveDayForecasts', JSON.stringify(fiveDayForecasts));
                 window.open("https://jorullian.github.io/orullian-weather-dashboard-module-6-challenge/query.html", "_target")
             })
             .catch(function (error) {
@@ -67,21 +80,24 @@ const getLocationApi = function (city) {
                     const longitude = data[0].lon;
                     const measurementType = getMeasurementUnits();
 
-                    return getWeatherApi(latitude, longitude, measurementType, city); // Receive return from getWeatherApi function
+                    const fiveDayWeatherPromise = getFiveDayWeatherApi(latitude, longitude, measurementType, city); // Receive return from getFiveDayWeatherApi function
+                    const currentWeatherPromise = getCurrentWeatherApi(latitude, longitude, measurementType, city); // Receive return from getCurrentWeatherApi
+
+                    return Promise.all([fiveDayWeatherPromise, currentWeatherPromise]);
                 });
             }
         });
 }
 
-const getWeatherApi = function (latitude, longitude, measurementType, cityName) {
+const getFiveDayWeatherApi = function (latitude, longitude, measurementType, cityName) {
     const requestForecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&units=${measurementType}&appid=${openWeatherMapApiKey}`;
 
     return fetch(requestForecastUrl)
         .then(function (response) {
             if (response.ok) {
                 return response.json().then(function (data) {
-                    let weatherArray = data.list.map(forecast => {
-                        // Parameters for the weatherArray object
+                    let weatherFiveDayArray = data.list.map(forecast => {
+                        // Parameters for the weatherFiveDayArray object
                         return {
                             city: cityName,
                             date: dayjs(forecast.dt_txt.split(' ')[0]).format('MMMM D YY'),
@@ -93,8 +109,33 @@ const getWeatherApi = function (latitude, longitude, measurementType, cityName) 
                             icon: convertIdToIcon(forecast.weather[0].icon)
                         };
                     });
-                    console.log(weatherArray); // Used to easily verify if weatherArray object is created
-                    return weatherArray; // Return ultimately sent to formSubmitHandler function
+                    console.log(weatherFiveDayArray); // Used to easily verify if weatherFiveDayArray object is created
+                    return weatherFiveDayArray; // Return ultimately sent to formSubmitHandler function
+                });
+            }
+        });
+}
+
+const getCurrentWeatherApi = function (latitude, longitude, measurementType, cityName) {
+    const requestCurrentUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=${measurementType}&appid=${openWeatherMapApiKey}`
+
+    return fetch(requestCurrentUrl)
+        .then(function (response) {
+            if(response.ok) {
+                return response.json().then(function (data) {
+                    console.log(data);
+                    let weatherCurrentArray = {
+                        // Parameters for the weatherCurrentArray object
+                            city: cityName,
+                            temperature: data.main.temp,
+                            humidity: data.main.humidity,
+                            weather: data.weather[0].description,
+                            windSpeed: data.wind.speed,
+                            icon: convertIdToIcon(data.weather[0].icon)
+                    };
+                    
+                    console.log(weatherCurrentArray); // Used to easily verify if weatherCurrentArray object is created
+                    return weatherCurrentArray; // Return ultimately sent to formSubmitHandler function
                 });
             }
         });
