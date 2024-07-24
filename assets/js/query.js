@@ -66,6 +66,7 @@ const displayCurrentForecast = function () {
     // Set data as variables
     const currentTemp = currentForecast.temperature;
     const currentHumidity = currentForecast.humidity;
+    const currentWindSpeed = currentForecast.windSpeed
     const currentIcon = currentForecast.icon;
 
     // Create the card and append all components
@@ -83,7 +84,8 @@ const displayCurrentForecast = function () {
     cardText.classList.add('card-text', 'd-flex', 'align-items-center', 'flex-column');
     cardText.innerHTML =` 
         <p>Current Temp: ${currentTemp}</p>
-        <p>Humidity: ${currentHumidity}%</p>`;
+        <p>Humidity: ${currentHumidity}%</p>
+        <p>Wind Speed: ${currentWindSpeed} mph</p>`;
 
     const icon = document.createElement('img');
     icon.classList.add('d-flex', 'justify-content-center', 'bg-secondary', 'img-responsive')
@@ -133,8 +135,11 @@ const displayFiveDayForecast = function () {
         const lowestTempText = `Low: ${dayLowestTempObj.temperature}`;
 
         const cardText = document.createElement('p');
-        cardText.classList.add('card-text', 'd-flex', 'justify-content-center');
-        cardText.textContent = `${highestTempText}, ${lowestTempText}`;
+        cardText.classList.add('card-text', 'd-flex', 'flex-column', 'align-items-center');
+        cardText.innerHTML = `<p>${highestTempText}</p>
+                                <p>${lowestTempText}</p>
+                                <p>Humidity: ${dayArray[0].humidity}%</p>
+                                <p>Wind Speed: ${dayArray[0].windSpeed} mph</p>`;
 
         const iconUrl = dayArray;
         const icon = document.createElement('img');
@@ -192,6 +197,7 @@ const populatePreviousCurrentForecast = function(index, cityName) {
     // Set data as variables
     const currentTemp = selectedForecast.temperature;
     const currentHumidity = selectedForecast.humidity;
+    const currentWindSpeed = selectedForecast.windSpeed;
     const currentIcon = selectedForecast.icon;
 
     // Create the card and append all components
@@ -209,7 +215,8 @@ const populatePreviousCurrentForecast = function(index, cityName) {
     cardText.classList.add('card-text', 'd-flex', 'align-items-center', 'flex-column');
     cardText.innerHTML =` 
         <p>Current Temp: ${currentTemp}</p>
-        <p>Humidity: ${currentHumidity}%</p>`;
+        <p>Humidity: ${currentHumidity}%</p>
+        <p>Wind Speed: ${currentWindSpeed} mph</p>`;
 
     const icon = document.createElement('img');
     icon.classList.add('d-flex', 'justify-content-center', 'bg-secondary', 'img-responsive')
@@ -257,8 +264,11 @@ const populatePreviousFiveDayForecast = function (index, cityName) {
         const lowestTempText = `Low: ${dayLowestTempObj.temperature}`;
 
         const cardText = document.createElement('p');
-        cardText.classList.add('card-text', 'd-flex', 'justify-content-center');
-        cardText.textContent = `${highestTempText}, ${lowestTempText}`;
+        cardText.classList.add('card-text', 'd-flex', 'flex-column', 'align-items-center');
+        cardText.innerHTML = `<p>${highestTempText}</p>
+                                <p>${lowestTempText}</p>
+                                <p>Humidity: ${dayArray[0].humidity}%</p>
+                                <p>Wind Speed: ${dayArray[0].windSpeed} mph</p>`;
 
         const iconUrl = dayArray[0].icon;
         const icon = document.createElement('img');
